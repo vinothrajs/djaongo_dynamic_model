@@ -1,0 +1,33 @@
+
+{% extends 'index.html' %}
+
+{% block content %}
+<h1>Employee List</h1>
+<div class="table-responsive">
+    <div class="table">
+        <div class="table-header">
+            <div class="table-row">
+                <div class="table-cell">Employee ID</div>
+                <div class="table-cell">Name</div>
+                <div class="table-cell">Email</div>
+                <div class="table-cell">Actions</div>
+            </div>
+        </div>
+        <div class="table-body">
+            {% for employee in employees %}
+            <div class="table-row">
+                <div class="table-cell">{{ employee.eid }}</div>
+                <div class="table-cell">{{ employee.ename }}</div>
+                <div class="table-cell">{{ employee.eemail }}</div>
+                <div class="table-cell">
+                    <a href="{% url 'employee_detail' employee.pk %}" class="btn btn-sm btn-info">Details</a>
+                    <a href="{% url 'employee_update' employee.pk %}" class="btn btn-sm btn-info">Edit</a>
+                    <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<a href="{% url 'employee_create' %}" class="btn btn-primary">Add Employee</a>
+{% endblock content %}
