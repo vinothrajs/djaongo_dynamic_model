@@ -67,3 +67,13 @@ def dynamic_model(request):
     data = serialize("json",  page1.object_list)
     return JsonResponse(data ,  status=200, safe=False)
     # Now you can use the queryset or perform any other operations with the dynamic model
+
+from django.shortcuts import render
+from django.http import JsonResponse
+
+def ajax_view(request):
+        context = {
+            'message': 'Hello from Ajax!',
+            'other_data': 'Some other data you want to pass',
+        }
+        return render(request, 'ajax_template.html',context)

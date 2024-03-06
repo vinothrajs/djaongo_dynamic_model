@@ -4,4 +4,12 @@
 {% block content %}
     <script src="{% static 'scripts/home.min.js' %}"></script>
     <h1 >{{object}}</h1> 
+
+    <p>Ajax</p>
+    <button id="ajaxcallbutton">Click me</button>
+    <div id="ajax-content">
+
+    </div>
+    {% csrf_token %}
+
 {% endblock content %}

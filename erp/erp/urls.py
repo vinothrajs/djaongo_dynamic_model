@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),  
     path('home', views.home),  
     path('dynamic_model', views.dynamic_model),  
+    path('ajax_view', views.ajax_view), 
 
     path('employee/', employeeviews.employee_list, name='employee_list'),
     path('employee/add/', employeeviews.employee_create, name='employee_create'),

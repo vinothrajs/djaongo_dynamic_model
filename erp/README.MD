@@ -23,6 +23,8 @@ python3 manage.py startapp appname
 
 python manage.py runserver
 
+npm run dev 
+
 .\venv\Scripts\activate
 
 python manage.py makemigrations
