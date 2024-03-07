@@ -1,4 +1,5 @@
 import json
+import time
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.serializers import serialize
@@ -51,6 +52,7 @@ def get_dynamic_model(table_name, fields):
     return model_class
 
 def dynamic_model(request):
+    start_time = time.time()
     # Assume table_name and fields are defined 
     metatables = 'ledger'  # Specify the table name
 
@@ -62,9 +64,12 @@ def dynamic_model(request):
 
     # Perform operations with the dynamic model
     queryset = DynamicModel.objects.all()
-    p = Paginator(queryset, 1000) 
+    p = Paginator(queryset, 500) 
     page1 = p.page(1000)
     data = serialize("json",  page1.object_list)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Time Taken {elapsed_time:.4f} seconds")  
     return JsonResponse(data ,  status=200, safe=False)
     # Now you can use the queryset or perform any other operations with the dynamic model
 
