@@ -19,6 +19,7 @@ from sample import views
 from django.contrib import admin
 from django.urls import include, path
 from sample.employee import  views as employeeviews
+from sample.orders.views import add_order_row, order_details, save_orders
 
 urlpatterns = [  
     path('', views.index),
@@ -36,4 +37,8 @@ urlpatterns = [
 
     path('addcontact/', views.add_contact, name='add_contact'),
     path('added/', views.contact_added, name='contact_added'),
+
+    path('order-details/', order_details, name='order_details'),
+    path('add-order-row/', add_order_row, name='add_order_row'),
+    path('save-orders/', save_orders, name='save_orders'),
 ]  

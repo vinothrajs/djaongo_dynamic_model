@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <h2>Order Details</h2>
+
+    <form id="order-form" method="post" hx-post="{% url 'save_orders' %}" hx-target="#result-message" hx-swap="innerHTML">
+        {% csrf_token %}
+        
+        <table id="order-table" border="1">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="item_name" value="{{ initial_order.item_name }}"></td>
+                    <td><input type="number" name="quantity" value="{{ initial_order.quantity }}"></td>
+                    <td><input type="number" name="price" value="{{ initial_order.price }}"></td>
+                    <td><input type="number" name="ext_price" value="{{ initial_order.ext_price }}"></td>
+                    <td><button type="button" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <button type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
+    </form>
+    <div id="result-message"></div>
+
+{% endblock %}

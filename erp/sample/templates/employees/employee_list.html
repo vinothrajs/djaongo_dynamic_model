@@ -29,5 +29,33 @@
         </div>
     </div>
 </div>
+<style>
+    .table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.table-row {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #ccc; /* Add border between rows */
+}
+
+.table-cell {
+    flex: 1;
+    padding: 8px;
+}
+
+.actions {
+    justify-content: flex-end; /* Align actions to the end */
+}
+
+/* Optional: Responsive styles */
+.table-responsive {
+    overflow-x: auto;
+}
+
+</style>
 <a href="{% url 'employee_create' %}" class="btn btn-primary">Add Employee</a>
 {% endblock content %}

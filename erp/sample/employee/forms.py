@@ -22,7 +22,7 @@ class EmployeeForm(forms.ModelForm):
                     self.fields[field_name] = forms.EmailField(required=required)
     class Meta:
         model = Employee
-        fields = ['eid', 'ename', 'eemail', 'econtact']
+        fields = ['ename', 'eemail', 'eid', 'econtact']
 
 # field_validations = {
 #     'eid': {'required': True, 'max_length': 2},
