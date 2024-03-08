@@ -48,3 +48,11 @@ field_types = {
     'URLField': models.URLField(max_length=200),
     'UUIDField': models.UUIDField(),
 }
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254)
+    phone_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name

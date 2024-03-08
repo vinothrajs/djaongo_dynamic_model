@@ -33,4 +33,7 @@ urlpatterns = [
     path('employee/<int:pk>/', employeeviews.employee_detail, name='employee_detail'),
     path('employee/<int:pk>/update/', employeeviews.employee_update, name='employee_update'),
     path('employee/<int:pk>/delete/', employeeviews.employee_delete, name='employee_delete'),
+
+    path('addcontact/', views.add_contact, name='add_contact'),
+    path('added/', views.contact_added, name='contact_added'),
 ]  

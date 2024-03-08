@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.shortcuts import render, redirect  
-from .forms import EmployeeForm  
+from .forms import ContactForm, EmployeeForm  
 from django.db import models
 from django.core.paginator import Paginator
 from .models import *
@@ -82,3 +82,17 @@ def ajax_view(request):
             'other_data': 'Some other data you want to pass',
         }
         return render(request, 'ajax_template.html',context)
+
+
+def add_contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('contact_added')
+    else:
+        form = ContactForm()
+    return render(request, 'contacts/add_contact.html', {'form': form})
+
+def contact_added(request):
+    return render(request, 'contacts/contact_added.html')
