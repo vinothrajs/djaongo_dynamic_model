@@ -1,0 +1,12 @@
+Matches {{matched_item|length}} / {{  count }} items in the directory.
+
+{% for i in matched_item %}
+    <div onclick="selectOption('{{ i.item_name }}')">{{ i.pk }} : {{ i.item_name }} - {{ i.price }} $</div>
+{% endfor %}
+
+<script defer>
+    function selectOption (selected_val) {
+            const input = document.querySelector('#item_name_1');
+            input.value = selected_val;
+        }
+        </script>

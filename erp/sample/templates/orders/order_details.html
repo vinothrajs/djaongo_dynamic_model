@@ -3,10 +3,15 @@
 {% block content %}
     <h2>Order Details</h2>
 
+    <h3>
+        <span class="htmx-indicator">
+          ...
+       </span>
+    </h3>
     <form id="order-form" method="post" hx-post="{% url 'save_orders' %}" hx-target="#result-message" hx-swap="innerHTML">
         {% csrf_token %}
         
-        <table id="order-table" border="1">
+        <table id="order-table" class="table-responsive">
             <thead>
                 <tr>
                     <th>Product</th>
@@ -17,12 +22,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="text" name="item_name" value="{{ initial_order.item_name }}"></td>
-                    <td><input type="number" name="quantity" value="{{ initial_order.quantity }}"></td>
-                    <td><input type="number" name="price" value="{{ initial_order.price }}"></td>
-                    <td><input type="number" name="ext_price" value="{{ initial_order.ext_price }}"></td>
-                    <td><button type="button" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
+                <tr class="row-container">
+
+                    <td>
+                        <select name="item_name" class="autocomplete" style="width: 300px;"></select>
+                    
+                   
+                    <!-- <input name="q"
+                        placeholder="Search for a title"
+                        hx-get="https://jsonplaceholder.typicode.com/users"
+                        hx-target="#result-message"
+                        hx-trigger="input delay:0.2s"> -->
+                    <!-- <input class="form-control" type="search"
+                        name="item_name"
+                        id="item_name_{{row_count}}"
+                        placeholder="Begin Typing To Search Users..."
+                        hx-get="/search/results/"
+                        hx-trigger="keyup changed, search, input delay:0.2s"
+                        hx-target="#search-results"
+                        hx-indicator=".htmx-indicator"
+                        hx-swap="innerHTML"
+                        value="{{initial_order.item_name}}"
+                        id="autoseachwithhtmx"/> -->
+                        <!-- <<input type="text" name="item_name" value="{{ initial_order.item_name }}"> -->
+                    </td>
+                
+                    <td><input type="number" id="quantity_{{row_count}}"  name="quantity" value="{{ initial_order.quantity }}"></td>
+                    <td><input type="number" id="price_{{row_count}}" name="price" value="{{ initial_order.price }}"></td>
+                    <td><input type="number" id="ext_price_{{row_count}}" name="ext_price" value="{{ initial_order.ext_price }}"></td>
+                    <td><button type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
                 </tr>
             </tbody>
 
@@ -30,6 +58,86 @@
 
         <button type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
     </form>
+    <!-- <div id="search-results">
+        {% include "../orders/search_results.html" %}
+    </div> -->
+    
     <div id="result-message"></div>
+  
 
+<script>
+        $(document).ready(function() {
+            $('.autocomplete').select2({
+                placeholder: 'Select an option',
+                allowClear: true,
+                minimumInputLength: 2,
+                ajax: {
+                    url: '/search/results/',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                    console.log(params)
+                    var queryParameters = {
+                        item_name: params.term
+                    }
+                        return queryParameters; 
+                    },
+                    processResults: function(data) {
+                        console.log(data)
+                        return {
+                            results: $.map(data, function(data) {
+                                return {
+                                    id: data.id,
+                                    text: data.item_name
+                                };
+                            })
+                        };
+                        
+                    },
+                    cache: true
+                }
+            });
+            // $('.autocomplete').on('select2:select', function (e) {
+            //     var data = e.params.data;
+            //     console.log(data);
+            //     console.log(this)
+            // });
+        });
+
+</script>
+<style>
+    #container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .htmx-indicator {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    form {
+        position: relative;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #search-results {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .highlight {  
+        background-color: #46ffb3;  
+    }
+</style>
 {% endblock %}

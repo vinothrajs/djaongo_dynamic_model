@@ -1,8 +1,52 @@
-<!-- This template will be used for the new row added dynamically -->
+
 <tr>
-    <td><input type="text" name="item_name" value=""></td>
+    <td>
+        <select class="autocomplete" name="item_name" style="width: 300px;"></select>
+    </td>
     <td><input type="number" name="quantity" value="1"></td>
     <td><input type="number" name="price" value="10.00"></td>
     <td><input type="number" name="ext_price" value="{{ initial_order.ext_price }}"></td>
     <td><button type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
 </tr>
+
+
+<script>
+    $(document).ready(function() {
+        $('.autocomplete').select2({
+            placeholder: 'Select an option',
+            allowClear: true,
+            minimumInputLength: 2,
+            ajax: {
+                url: '/search/results/',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                console.log(params)
+                var queryParameters = {
+                    item_name: params.term
+                }
+                    return queryParameters; 
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: $.map(data, function(data) {
+                            return {
+                                id: data.id,
+                                text: data.item_name
+                            };
+                        })
+                    };
+                    
+                },
+                cache: true
+            }
+        });
+        // $('.autocomplete').on('select2:select', function (e) {
+        //     var data = e.params.data;
+        //     console.log(data);
+        //     console.log(this)
+        // });
+    });
+
+</script>

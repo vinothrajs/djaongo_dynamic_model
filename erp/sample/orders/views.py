@@ -1,37 +1,25 @@
+import json
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .forms import OrderDetailForm
-from .models import OrderDetail
+from .models import ItemModelSerializer, Items, OrderDetail
+from django.core.serializers import serialize
 
 def order_details(request):
     initial_form = OrderDetailForm()
-    return render(request, 'orders/order_details.html', {'initial_form': initial_form})
+    return render(request, 'orders/order_details.html', {'initial_form': initial_form , 'row_count': 1})
 
 def add_order_row(request):
     form = OrderDetailForm()
-    return render(request, 'orders/order_row.html', {'form': form})
+    return render(request, 'orders/order_row.html', {'form': form })
     
-def save_orders_2(request):
-    print(request)
-    if request.method == 'POST':
-        form = OrderDetailForm(request.POST)
-        print(form)
-        if form.is_valid():
-            order_detail = form.save(commit=False)  # Don't save to the database yet
-            order_detail.save()  # Save to the database only if the form is valid
-            return JsonResponse({'success': True, 'message': 'Order saved successfully'})
-        else:
-            return JsonResponse({'success': False, 'message': 'Invalid form data'})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method'})
-
 def save_orders(request):
     if request.method == 'POST':
         item_names = request.POST.getlist('item_name')
         quantities = request.POST.getlist('quantity')
         prices = request.POST.getlist('price')
         ext_prices = request.POST.getlist('ext_price')
-
+        print(item_names)
         order_details = []
 
         for i in range(len(item_names)):
@@ -53,3 +41,35 @@ def save_orders(request):
             return JsonResponse({'success': False, 'message': f'Failed to save orders. Error: {str(e)}'})
 
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+def search_results_view_1(request):
+    query = request.GET.get('item_name', '')
+    print(f'{query = }')
+
+    all_items = Items.objects.all()
+    print(all_items)
+    if query:
+        matched_item = all_items.filter(item_name__icontains=query)
+    else:
+        matched_item = []
+
+    context = {'matched_item': matched_item, 'count': all_items.count()}
+    print(context)
+    return render(request, 'orders/search_results.html', context)
+
+from django.http import JsonResponse
+from django.core.serializers import serialize
+
+def search_results_view(request):
+    query = request.GET.get("item_name", "")
+    print("qi"+query)
+    all_items = Items.objects.all()
+    print(all_items)
+    if query:
+        matched_item = all_items.filter(item_name__icontains=query)
+    else:
+        matched_item = []
+    data = ItemModelSerializer(matched_item, many=True).data
+    print(matched_item)
+    return JsonResponse(data, safe=False)
+

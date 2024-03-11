@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sample',
-    'debug_toolbar'
+    'debug_toolbar',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,5 @@ DEBUG_TOOLBAR_CONFIG = {                                       # <-- NEW
 if DEBUG:                                                      # <-- NEW
     import mimetypes                                           # <-- NEW          
     mimetypes.add_type("application/javascript", ".js", True)  # <-- NEW
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400 # Increase the value as needed
