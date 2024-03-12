@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    <h2>Order Details</h2>
+    <h3>Create Order</h3>
 
     <h3>
         <span class="htmx-indicator">
@@ -10,9 +10,10 @@
     </h3>
     <form id="order-form" method="post" hx-post="{% url 'save_orders' %}" hx-target="#result-message" hx-swap="innerHTML">
         {% csrf_token %}
-        
-        <table id="order-table" class="table-responsive">
-            <thead>
+
+
+        <table id="order-table" class="table table-bordered" style="width: 75%;">
+            <thead class="thead-dark">
                 <tr>
                     <th>Product</th>
                     <th>Quantity</th>
@@ -25,7 +26,7 @@
                 <tr class="row-container">
 
                     <td>
-                        <select name="item_name" class="autocomplete" style="width: 300px;"></select>
+                        <select  id="item_name_{{row_count}}" name="item_name" class="autocomplete form-control form-control-sm" style="width: 100%;" ></select>
                     
                    
                     <!-- <input name="q"
@@ -47,16 +48,23 @@
                         <!-- <<input type="text" name="item_name" value="{{ initial_order.item_name }}"> -->
                     </td>
                 
-                    <td><input type="number" id="quantity_{{row_count}}"  name="quantity" value="{{ initial_order.quantity }}"></td>
-                    <td><input type="number" id="price_{{row_count}}" name="price" value="{{ initial_order.price }}"></td>
-                    <td><input type="number" id="ext_price_{{row_count}}" name="ext_price" value="{{ initial_order.ext_price }}"></td>
-                    <td><button type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="number" id="quantity_{{row_count}}"  name="quantity" onchange="updateExtPrice(this)" value="{{ form.initial.quantity }}">
+                    </td>
+                    <td>
+                        <input class="form-control form-control-sm" type="number" id="price_{{row_count}}" name="price" onchange="updateExtPrice(this)" value="{{ form.initial.price }}">
+                    </td>
+                    <td>
+                        <input class="form-control form-control-sm" type="number" id="ext_price_{{row_count}}" name="ext_price" value="{{ form.initial.ext_price }}">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
                 </tr>
             </tbody>
 
         </table>
 
-        <button type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
+        <button class="btn btn-success btn-sm" type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
     </form>
     <!-- <div id="search-results">
         {% include "../orders/search_results.html" %}
@@ -64,13 +72,24 @@
     
     <div id="result-message"></div>
   
-
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> Please correct the following errors:
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 <script>
         $(document).ready(function() {
             $('.autocomplete').select2({
-                placeholder: 'Select an option',
+                placeholder: 'Select an Product',
                 allowClear: true,
-                minimumInputLength: 2,
+                minimumInputLength: 1,
                 ajax: {
                     url: '/search/results/',
                     dataType: 'json',
@@ -103,7 +122,15 @@
             //     console.log(this)
             // });
         });
-
+    //     function updateExtPrice(rowCount) {
+    //         var quantity = parseFloat($('#quantity_' + rowCount).val()) || 0;
+    //         var price = parseFloat($('#price_' + rowCount).val()) || 0;
+    //         var extPrice = quantity * price;
+    //         $('#ext_price_' + rowCount).val(extPrice.toFixed(2));
+    // }
+    function updateExtPrice(input) {
+        console.log(input.value);
+    }
 </script>
 <style>
     #container {
@@ -112,23 +139,9 @@
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    h3 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
     .htmx-indicator {
         display: inline-block;
         margin-left: 10px;
-    }
-    form {
-        position: relative;
-    }
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        font-size: 18px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
     }
     #search-results {
         margin-top: 20px;

@@ -1,25 +1,52 @@
-
-<tr>
-    <td>
-        <select class="autocomplete" name="item_name" style="width: 300px;"></select>
-    </td>
-    <td><input type="number" name="quantity" value="1"></td>
-    <td><input type="number" name="price" value="10.00"></td>
-    <td><input type="number" name="ext_price" value="{{ initial_order.ext_price }}"></td>
-    <td><button type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
+<!-- 
+{% for order_detail in order_details %}
+<tr data-row-id="{{ order_detail.pk }}">
+    <td>{{ forloop.counter }}</td>
+    <td>{{ order_detail.item_name }}</td>
+    <td><input class="form-control form-control-sm" type="number" name="quantity" value="{{ order_detail.quantity }}"></td>
+    <td><input class="form-control form-control-sm" type="number" name="price" value="{{ order_detail.price }}"></td>
+    <td><input class="form-control form-control-sm" type="number" name="ext_price" value="{{ order_detail.ext_price }}"></td>
+    <td><button class="btn btn-danger btn-sm" type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
 </tr>
-
+{% endfor %} -->
+{% for _ in counters %}
+    <tr data-row-id="">
+        <td>
+            <select class="autocomplete" name="item_name" value="{{ form.initial.item_name }}" style="width: 100%;"></select>
+        </td>
+        <td><input class="form-control form-control-sm" type="number" name="quantity" value="{{ form.initial.quantity }}"></td>
+        <td><input class="form-control form-control-sm" type="number" name="price" value="{{ form.initial.quantity }}"></td>
+        <td><input class="form-control form-control-sm" type="number" name="ext_price" value="{{ form.initial.ext_price }}"></td>
+        <td><button class="btn btn-danger btn-sm" type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
+    </tr>
+{% endfor %}
+<!-- {% for c in counters %}
+<tr data-row-id="">
+    <td>
+        <select class="autocomplete" name="item_name" style="width: 100%;"></select>
+    </td>
+    <td><input class="form-control form-control-sm" type="number" name="quantity" value="{{ form.initial.quantity }}"></td>
+    <td><input class="form-control form-control-sm" type="number" name="price" value="{{ form.initial.quantity }}"></td>
+    <td><input class="form-control form-control-sm" type="number" name="ext_price" value="{{ form.initial.ext_price }}"></td>
+    <td><button class="btn btn-danger btn-sm" type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
+</tr>
+{% endfor %} -->
 
 <script>
+    function removeRow(button) {
+        var td = button.parentNode;
+        var tr = td.parentNode;
+        tr.remove();
+    }
     $(document).ready(function() {
         $('.autocomplete').select2({
-            placeholder: 'Select an option',
+            placeholder: 'Select an Product',
             allowClear: true,
             minimumInputLength: 2,
             ajax: {
                 url: '/search/results/',
                 dataType: 'json',
-                delay: 250,
+                delay: 100,
                 data: function (params) {
                 console.log(params)
                 var queryParameters = {

@@ -6,12 +6,14 @@ from .models import ItemModelSerializer, Items, OrderDetail
 from django.core.serializers import serialize
 
 def order_details(request):
-    initial_form = OrderDetailForm()
-    return render(request, 'orders/order_details.html', {'initial_form': initial_form , 'row_count': 1})
+    default_order_detail = OrderDetail(quantity=0, price=0.00, ext_price=0.00)
+    form = OrderDetailForm(instance=default_order_detail)
+    return render(request, 'orders/order_details.html', {'form': form , 'row_count': 1})
 
 def add_order_row(request):
-    form = OrderDetailForm()
-    return render(request, 'orders/order_row.html', {'form': form })
+    default_order_detail = OrderDetail(quantity=0, price=0.00, ext_price=0.00)
+    form = OrderDetailForm(instance=default_order_detail)
+    return render(request, 'orders/order_row.html', {'form': form  , 'counters' : range(2)})
     
 def save_orders(request):
     if request.method == 'POST':
@@ -33,6 +35,11 @@ def save_orders(request):
 
             if form.is_valid():
                 order_details.append(OrderDetail(**form.cleaned_data))
+            else:
+                
+                data = ItemModelSerializer(form.errors, many=True).data
+                return JsonResponse({'Validation': False, 'message': 'Invalid request method' , 'form': data})
+           
 
         try:
             OrderDetail.objects.bulk_create(order_details)
