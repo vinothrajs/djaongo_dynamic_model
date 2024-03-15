@@ -9,13 +9,14 @@
     <td><button class="btn btn-danger btn-sm" type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
 </tr>
 {% endfor %} -->
-{% for _ in counters %}
-    <tr data-row-id="">
+{% for counter in counters %}
+      
+    <tr data-row-id="{{counter}}">
         <td>
-            <select class="autocomplete" name="item_name" value="{{ form.initial.item_name }}" style="width: 100%;"></select>
+            <select class="autocomplete" name="item_name" value="{{ form.initial.item_name }}" onchange="gettingprices(this)" style="width: 100%;"></select>
         </td>
-        <td><input class="form-control form-control-sm" type="number" name="quantity" value="{{ form.initial.quantity }}"></td>
-        <td><input class="form-control form-control-sm" type="number" name="price" value="{{ form.initial.quantity }}"></td>
+        <td><input class="form-control form-control-sm" type="number" name="quantity" value="{{ form.initial.quantity }}" onchange="updateExtPrices(this)"></td>
+        <td><input class="form-control form-control-sm" type="number" name="price" value="{{ form.initial.price }}"></td>
         <td><input class="form-control form-control-sm" type="number" name="ext_price" value="{{ form.initial.ext_price }}"></td>
         <td><button class="btn btn-danger btn-sm" type="button" hx-boost="1" onclick="removeRow(this)">Remove</button></td>
     </tr>
@@ -33,6 +34,8 @@
 {% endfor %} -->
 
 <script>
+
+ 
     function removeRow(button) {
         var td = button.parentNode;
         var tr = td.parentNode;
@@ -75,5 +78,35 @@
         //     console.log(this)
         // });
     });
+
+    function gettingprices(input){                
+                var item_id = input.value
+                console.log(item_id)
+                $.ajax({
+                    url:'/getprice/'+item_id,
+                    dataType:'json',                    
+                    success: function(response){                       
+                        var  price = response.price                       
+                        var row = $(input).closest('tr')                         
+                        row.find('input[name="price"]').val(price);
+                        row.find('input[name="quantity"]').val(1)
+                        total_default_price = price * 1
+                        row.find('input[name="ext_price"]').val(total_default_price.toFixed(2))
+                      
+                        
+                    }
+                })
+    }    
+
+    function updateExtPrices(input) {
+        console.log(input.value);
+        var quantity = input.value               
+        var row = $(input).closest('tr')
+        var price = row.find('input[name="price"]').val()
+        console.log("order_row",price)
+        var total_price = price * quantity
+        row.find('input[name="ext_price"]').val(total_price.toFixed(2))
+    }
+
 
 </script>

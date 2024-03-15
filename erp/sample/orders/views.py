@@ -11,17 +11,24 @@ def order_details(request):
     return render(request, 'orders/order_details.html', {'form': form , 'row_count': 1})
 
 def add_order_row(request):
+    # print("ADDing New ROWWWWWWWWWW")
     default_order_detail = OrderDetail(quantity=0, price=0.00, ext_price=0.00)
+    # print(default_order_detail)
     form = OrderDetailForm(instance=default_order_detail)
+    # print(form)
     return render(request, 'orders/order_row.html', {'form': form  , 'counters' : range(2)})
     
 def save_orders(request):
-    if request.method == 'POST':
-        item_names = request.POST.getlist('item_name')
-        quantities = request.POST.getlist('quantity')
-        prices = request.POST.getlist('price')
-        ext_prices = request.POST.getlist('ext_price')
-        print(item_names)
+    if request.method == 'POST':       
+        item_names = request.POST.getlist('item_name[]')
+        quantities = request.POST.getlist('quantity[]')
+        prices = request.POST.getlist('price[]')
+        ext_prices = request.POST.getlist('ext_price[]')
+        # print("***************************************",item_names)
+        # print("***************************************",quantities)
+        # print("***************************************",prices)
+        # print("***************************************",ext_prices)
+        
         order_details = []
 
         for i in range(len(item_names)):
@@ -31,6 +38,8 @@ def save_orders(request):
                 'price': prices[i],
                 'ext_price': ext_prices[i]
             }
+            
+            print(form_data)
             form = OrderDetailForm(form_data)
 
             if form.is_valid():
@@ -43,6 +52,7 @@ def save_orders(request):
 
         try:
             OrderDetail.objects.bulk_create(order_details)
+            
             return JsonResponse({'success': True, 'message': 'Orders saved successfully'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Failed to save orders. Error: {str(e)}'})
@@ -54,7 +64,7 @@ def search_results_view_1(request):
     print(f'{query = }')
 
     all_items = Items.objects.all()
-    print(all_items)
+    # print(all_items)
     if query:
         matched_item = all_items.filter(item_name__icontains=query)
     else:
@@ -68,15 +78,29 @@ from django.http import JsonResponse
 from django.core.serializers import serialize
 
 def search_results_view(request):
+    print("search result view",request.GET)
     query = request.GET.get("item_name", "")
     print("qi"+query)
     all_items = Items.objects.all()
     print(all_items)
     if query:
         matched_item = all_items.filter(item_name__icontains=query)
+        
     else:
         matched_item = []
     data = ItemModelSerializer(matched_item, many=True).data
     print(matched_item)
     return JsonResponse(data, safe=False)
+
+def get_price_item(request,item_id):
+  try:  
+    item_values = Items.objects.get(id=item_id)
+    data = {
+        'price':item_values.price
+    }
+    return JsonResponse(data,safe=False)
+  except Items.DoesNotExist:
+    return JsonResponse(f"Item not found")
+  
+    
 

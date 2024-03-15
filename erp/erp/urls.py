@@ -19,7 +19,7 @@ from sample import views
 from django.contrib import admin
 from django.urls import include, path
 from sample.employee import  views as employeeviews
-from sample.orders.views import add_order_row, order_details, save_orders , search_results_view
+from sample.orders.views import add_order_row, order_details, save_orders ,get_price_item,search_results_view
 
 urlpatterns = [  
     path('', views.index),
@@ -42,4 +42,5 @@ urlpatterns = [
     path('add-order-row/', add_order_row, name='add_order_row'),
     path('save-orders/', save_orders, name='save_orders'),
     path('search/results/', search_results_view, name='search_results_view'),
+    path('getprice/<int:item_id>',get_price_item,name='get_price')
 ]  

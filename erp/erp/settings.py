@@ -79,13 +79,21 @@ WSGI_APPLICATION = 'erp.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'erp_poc',
+    #     'USER': 'root',
+    #     'PASSWORD': 'admin',
+    #     'HOST': 'localhost',
+    #     'PORT': '54320'
+    # }
+      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'erp_poc',
+        'NAME': 'htmx',
         'USER': 'root',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
-        'PORT': '54320'
+        'PORT': '5432'
     }
 }
 

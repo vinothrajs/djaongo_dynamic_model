@@ -11,7 +11,8 @@ class OrderDetail(models.Model):
 class Items(models.Model):
     item_name = models.CharField()
     price = models.IntegerField()
-
+    class Meta:
+        db_table = "items"
     def __str__(self):
         return self.item_name
     

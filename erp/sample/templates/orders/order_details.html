@@ -8,7 +8,7 @@
           ...
        </span>
     </h3>
-    <form id="order-form" method="post" hx-post="{% url 'save_orders' %}" hx-target="#result-message" hx-swap="innerHTML">
+    <form id="order-form" method="post" hx-post="{% url 'save_orders' %}" hx-swap="innerHTML" hx-target="#result-message">
         {% csrf_token %}
 
 
@@ -26,39 +26,25 @@
                 <tr class="row-container">
 
                     <td>
-                        <select  id="item_name_{{row_count}}" name="item_name" class="autocomplete form-control form-control-sm" style="width: 100%;" ></select>
-                    
+                        <select  id="item_name_{{row_count}}" name="item_name[]" class="autocomplete form-control form-control-sm" style="width: 100%;" onchange="gettingprice(this)"></select>
+                        <div class="invalid-feedback item-name-error">Please select an item.</div>
                    
-                    <!-- <input name="q"
-                        placeholder="Search for a title"
-                        hx-get="https://jsonplaceholder.typicode.com/users"
-                        hx-target="#result-message"
-                        hx-trigger="input delay:0.2s"> -->
-                    <!-- <input class="form-control" type="search"
-                        name="item_name"
-                        id="item_name_{{row_count}}"
-                        placeholder="Begin Typing To Search Users..."
-                        hx-get="/search/results/"
-                        hx-trigger="keyup changed, search, input delay:0.2s"
-                        hx-target="#search-results"
-                        hx-indicator=".htmx-indicator"
-                        hx-swap="innerHTML"
-                        value="{{initial_order.item_name}}"
-                        id="autoseachwithhtmx"/> -->
-                        <!-- <<input type="text" name="item_name" value="{{ initial_order.item_name }}"> -->
+  
                     </td>
                 
                     <td>
-                        <input class="form-control form-control-sm" type="number" id="quantity_{{row_count}}"  name="quantity" onchange="updateExtPrice(this)" value="{{ form.initial.quantity }}">
+                        <input class="quantity form-control form-control-sm" type="number" id="quantity_{{row_count}}"  name="quantity[]" onchange="updateExtPrice(this)" value="{{ form.initial.quantity }}" min="0" max="100">
+                        <div class="invalid-feedback quantity-error">Please enter a valid quantity greater than 0.</div>
                     </td>
                     <td>
-                        <input class="form-control form-control-sm" type="number" id="price_{{row_count}}" name="price" onchange="updateExtPrice(this)" value="{{ form.initial.price }}">
+                        <input class="form-control form-control-sm" type="number" id="price_{{row_count}}" name="price[]" value="{{ form.initial.price }}" readonly>
                     </td>
                     <td>
-                        <input class="form-control form-control-sm" type="number" id="ext_price_{{row_count}}" name="ext_price" value="{{ form.initial.ext_price }}">
+                        <input class="form-control form-control-sm" type="number" id="ext_price_{{row_count}}" name="ext_price[]" value="{{ form.initial.ext_price }}" readonly>
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-sm" type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend">Add</button></td>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="addRow()">Add Row</button><br> 
+                        <!-- <button class="btn btn-primary btn-sm" type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend" >Add</button></td> -->
                 </tr>
             </tbody>
 
@@ -66,71 +52,277 @@
 
         <button class="btn btn-success btn-sm" type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
     </form>
-    <!-- <div id="search-results">
-        {% include "../orders/search_results.html" %}
-    </div> -->
+   
     
     <div id="result-message"></div>
   
-    {% if form.errors %}
-    <div class="alert alert-danger">
-        <strong>Error:</strong> Please correct the following errors:
-        <ul>
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
+   
 <script>
+
+           
         $(document).ready(function() {
-            $('.autocomplete').select2({
-                placeholder: 'Select an Product',
-                allowClear: true,
-                minimumInputLength: 1,
-                ajax: {
-                    url: '/search/results/',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                    console.log(params)
-                    var queryParameters = {
-                        item_name: params.term
-                    }
-                        return queryParameters; 
-                    },
-                    processResults: function(data) {
-                        console.log(data)
-                        return {
-                            results: $.map(data, function(data) {
-                                return {
-                                    id: data.id,
-                                    text: data.item_name
-                                };
-                            })
+              
+              $('.autocomplete').select2({
+                  placeholder: 'Select an Product',
+                  allowClear: true,
+                  minimumInputLength: 1,
+                  ajax: {
+                      url: '/search/results/',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                      console.log(params)
+                      var queryParameters = {
+                          item_name: params.term
+                      }
+                          return queryParameters; 
+                      },
+                      processResults: function(data) {
+                          console.log(data)
+                          return {
+                              results: $.map(data, function(data) {
+                                  return {
+                                      id: data.id,
+                                      text: data.item_name,
+  
+                                  };
+                              })
+                          };
+                          
+                      },
+                      cache: true
+                  }
+              });
+              
+              $("#order-form").submit(function(event) {
+                  console.log("Validation form :", validationForm());
+                  if (!validationForm()) {
+                      console.log("Form validation failed");
+                      // Prevent form submission if validation fails
+                    //   event.preventDefault();
+                      return
+                  } 
+              });
+  
+              $(document).on('input change', '.quantity, .autocomplete', function() {
+                      // Get the parent row of the current input field or select dropdown
+                      var parentRow = $(this).closest('tr');
+  
+                      // Check if the value is valid
+                      if ($(this).hasClass('autocomplete')) {
+                          if ($(this).val() !== '') {
+                              parentRow.find(".autocomplete").removeClass("is-invalid");
+                              // Hide the error message associated with this select dropdown
+                              parentRow.find('.item-name-error').hide();
+                          } else {
+                              parentRow.find(".autocomplete").addClass("is-invalid");
+                              // Show the error message associated with this select dropdown
+                              parentRow.find('.item-name-error').show();
+                          }
+                      }
+  
+                      if ($(this).hasClass('quantity')) {
+                          var quantityValue = parseInt($(this).val()); // Convert the value to an integer
+                          if (!isNaN(quantityValue) && quantityValue > 0) {
+                              parentRow.find(".quantity").removeClass("is-invalid");
+                              // Hide the error message associated with this quantity input field
+                              parentRow.find('.quantity-error').hide();
+                          } else {
+                              parentRow.find(".quantity").addClass("is-invalid");
+                              // Show the error message associated with this quantity input field
+                              parentRow.find('.quantity-error').show();
+                          }
+                      }
+                  });
+  
+             
+  
+             
+              });
+
+
+        function addRow() {
+                var table = document.getElementById("order-table").getElementsByTagName('tbody')[0];
+                var rowCount = table.rows.length;
+
+                // Create a new row
+                var newRow = table.insertRow(rowCount);
+                var columns = ['item_name', 'quantity', 'price', 'ext_price'];
+
+                // Increment row count for generating unique IDs
+                var row_count = rowCount + 1;
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = newRow.insertCell(i);
+                    var input = document.createElement("input");
+
+                    if (columns[i] === "item_name") {
+                        var select = document.createElement("select");
+                        select.className = "autocomplete form-control form-control-sm";
+                        select.name = columns[i] + "[]";
+                        select.setAttribute("style", "width: 100%;");
+                        select.onchange = function () {
+                            gettingprice(this);
                         };
+                        select.id = columns[i] + "_" + row_count; // Assign unique ID
+                        cell.appendChild(select);
                         
-                    },
-                    cache: true
+                        $('.autocomplete').select2({
+                            placeholder: 'Select an Product',
+                            allowClear: true,
+                            minimumInputLength: 1,
+                            ajax: {
+                                url: '/search/results/',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function (params) {
+                                    console.log(params)
+                                    var queryParameters = {
+                                        item_name: params.term
+                                    }
+                                    return queryParameters;
+                                },
+                                processResults: function (data) {
+                                    console.log(data)
+                                    return {
+                                        results: $.map(data, function (data) {
+                                            return {
+                                                id: data.id,
+                                                text: data.item_name,
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            }
+                        });
+                        var errorDiv = document.createElement("div");
+                            errorDiv.className = columns[i] + "-error invalid-feedback"; // Assign dynamic class name
+                            errorDiv.textContent = "Please select an item."; // Change the error message as needed
+
+                                // Append the error div after the select element
+                            cell.appendChild(errorDiv);
+                    } else {
+                        input.type = "number";
+                        input.value = (columns[i] === "quantity") ? 0 : "0.0";
+                        input.className = (columns[i] === "quantity")?"quantity form-control form-control-sm" : "form-control form-control-sm";
+                        input.name = columns[i] + "[]";
+                        input.id = columns[i] + "_" + row_count; // Assign unique ID
+                        if (columns[i] === "quantity") {
+                            input.addEventListener("change", function() {
+                                updateExtPrice(this);
+                            })
+                            
+                            cell.appendChild(input); 
+
+                            var errorDiv = document.createElement("div");
+                            errorDiv.className = columns[i] + "-error invalid-feedback"; // Assign dynamic class name
+                            errorDiv.textContent = "Please enter a valid quantity greater than 0."; // Change the error message as needed
+
+                            // Append the error div after the input element
+                            cell.appendChild(errorDiv);    
+                        
+                        }else{
+                            cell.appendChild(input);
+                        }                 
+                    }
                 }
-            });
-            // $('.autocomplete').on('select2:select', function (e) {
-            //     var data = e.params.data;
-            //     console.log(data);
-            //     console.log(this)
-            // });
-        });
-    //     function updateExtPrice(rowCount) {
-    //         var quantity = parseFloat($('#quantity_' + rowCount).val()) || 0;
-    //         var price = parseFloat($('#price_' + rowCount).val()) || 0;
-    //         var extPrice = quantity * price;
-    //         $('#ext_price_' + rowCount).val(extPrice.toFixed(2));
-    // }
-    function updateExtPrice(input) {
-        console.log(input.value);
-    }
+
+                // Add remove button
+                var removeButtonCell = newRow.insertCell(columns.length);
+                var removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "btn btn-danger btn-sm";
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", function () {
+                    removeRow(this);
+                });
+                removeButtonCell.appendChild(removeButton);
+                }  
+
+   
+
+
+            function removeRow(button) {
+                var row = button.parentNode.parentNode;
+                var table = row.parentNode;
+                table.deleteRow(row.rowIndex - 1);
+            }      
+ 
+         
+            function validationForm(){
+                console.log("validation form");
+                var isValid = true;
+
+                $("#order-table tbody tr").each(function(){
+                    var itemname = $(this).find(".autocomplete").val()
+                    var quantity = $(this).find(".quantity").val()
+
+
+                    if(!itemname){
+                        // console.log("Item name not entered");
+                        $(this).find(".autocomplete").addClass("is-invalid")
+                        $(this).find(".item-name-error").show()
+                        isValid = false;
+                    }else {
+                        // console.log("Item name is entered")
+                        $(this).find(".autocomplete").removeClass("is-invalid");
+                        $(this).find(".item-name-error").hide(); // Hide error message if valid
+                    }
+                    if (isNaN(quantity) || quantity <= 0) {
+                        // console.log("Quantity is not eneterd");
+                        $(this).find(".quantity").addClass("is-invalid");
+                        $(this).find(".quantity-error").show(); // Show custom error message
+                        isValid = false;
+                    } else {
+                    
+                        $(this).find(".quantity").removeClass("is-invalid");
+                        $(this).find(".quantity-error").hide(); // Hide error message if valid
+                    }
+                        })
+
+                return isValid
+            }
+
+            function gettingprice(input){                
+                var item_id = input.value
+                console.log(item_id)
+
+                if(item_id){
+                        $.ajax({
+                            url:'/getprice/'+item_id,
+                            dataType:'json',                    
+                            success: function(response){
+                            var  price = response.price  
+                                console.log('Input ID:', input);
+                                console.log('Extracted row_count:', input.id.split('_')[2]);
+                                console.log('Retrieved Price:', price);  
+                                $('#price_' + input.id.split('_')[2]).val(price)
+                                $('#quantity_' + input.id.split('_')[2]).val(1).trigger('change')
+                                var total_default_price = 1 * price
+                            
+                                $('#ext_price_' + input.id.split('_')[2]).val(total_default_price.toFixed(2));
+                                
+                                
+                            }
+                        })
+                    }else{
+                        $('#price_' + input.id.split('_')[2]).val("0.0")
+                        $('#quantity_' + input.id.split('_')[2]).val(0)
+                        $('#ext_price_' + input.id.split('_')[2]).val("0.0");
+                    }
+
+            }    
+
+            function updateExtPrice(input) {
+                console.log(input.value);
+                var default_quantity = input.value
+                var row_count = input.id.split('_')[1];
+                var price = parseFloat($('#price_' + row_count).val());
+                var total_price = price * default_quantity    
+                $('#ext_price_' + row_count).val(total_price.toFixed(2));
+            
+            }
 </script>
 <style>
     #container {

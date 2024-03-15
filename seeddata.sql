@@ -15,9 +15,9 @@ INSERT INTO ledger (from_date, to_date, ledger_id, cost) VALUES
 ('2024-04-01', '2024-04-30', 'JKL012', 400);
 
 
-INSERT INTO "table" (name) VALUES ('ledger');
+INSERT INTO "mtable" (name) VALUES ('ledger');
 
-INSERT INTO "field" (table_id, name, type) VALUES (1, 'from_date', 'DateField');
-INSERT INTO "field" (table_id, name, type) VALUES (1, 'to_date', 'DateField');
-INSERT INTO "field" (table_id, name, type) VALUES (1, 'ledger_id', 'CharField');
-INSERT INTO "field" (table_id, name, type) VALUES (1, 'cost', 'IntegerField');
+INSERT INTO "mfield" (table_id, name, type) VALUES (1, 'from_date', 'DateField');
+INSERT INTO "mfield" (table_id, name, type) VALUES (1, 'to_date', 'DateField');
+INSERT INTO "mfield" (table_id, name, type) VALUES (1, 'ledger_id', 'CharField');
+INSERT INTO "mfield" (table_id, name, type) VALUES (1, 'cost', 'IntegerField');
