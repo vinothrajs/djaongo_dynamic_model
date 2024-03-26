@@ -21,9 +21,14 @@ from django.urls import include, path
 from sample.employee import  views as employeeviews
 from sample.orders.views import add_order_row, order_details, save_orders ,get_price_item,search_results_view
 
+from django.conf.urls.i18n import i18n_patterns
+
 urlpatterns = [  
     path('', views.index),
     path('admin/', admin.site.urls),  
+
+    path('rosetta/', include('rosetta.urls')), #rosetta
+
     path('__debug__/', include(debug_toolbar.urls)),
     path('home', views.home),  
     path('dynamic_model', views.dynamic_model),  
@@ -42,5 +47,8 @@ urlpatterns = [
     path('add-order-row/', add_order_row, name='add_order_row'),
     path('save-orders/', save_orders, name='save_orders'),
     path('search/results/', search_results_view, name='search_results_view'),
-    path('getprice/<int:item_id>',get_price_item,name='get_price')
+    path('getprice/<int:item_id>',get_price_item,name='get_price'),
+    
+    path('i18n/', include('django.conf.urls.i18n')),
+    
 ]  

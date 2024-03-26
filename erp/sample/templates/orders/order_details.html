@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
-
+{% load i18n %}
 {% block content %}
-    <h3>Create Order</h3>
+    <h3>{% trans "Create Order" %}</h3>
 
     <h3>
         <span class="htmx-indicator">
@@ -15,42 +15,46 @@
         <table id="order-table" class="table table-bordered" style="width: 75%;">
             <thead class="thead-dark">
                 <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Action</th>
+                    <th>{% trans "Product" %}</th>
+                    <th>{% trans "Quantity" %}</th>
+                    <th>{% trans "Price" %}</th>
+                    <th>{% trans "Total" %}</th>
+                    <th>{% trans "Action" %}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="row-container">
 
                     <td>
-                        <select  id="item_name_{{row_count}}" name="item_name[]" class="autocomplete form-control form-control-sm" style="width: 100%;" onchange="gettingprice(this)"></select>
-                        <div class="invalid-feedback item-name-error">Please select an item.</div>
+                        <select  id="item_name_{{row_count}}" name="item_name[]" class="autocomplete form-control form-control-sm" style="width: 100%;" onchange="gettingprice(this)">
+                            <option selected="selected" value=1>
+                            Dell
+                            </option>
+                        </select>
+                        <div class="invalid-feedback item-name-error">{% trans "Please select an item." %}</div>
                    
   
                     </td>
                 
                     <td>
-                        <input class="quantity form-control form-control-sm" type="number" id="quantity_{{row_count}}"  name="quantity[]" onchange="updateExtPrice(this)" value="{{ form.initial.quantity }}" min="0" max="100">
-                        <div class="invalid-feedback quantity-error">Please enter a valid quantity greater than 0.</div>
+                        <input class="quantity form-control form-control-sm" type="number" id="quantity_{{row_count}}"  name="quantity[]" onchange="updateExtPrice(this)" value=1 min="0" max="100">
+                        <div class="invalid-feedback quantity-error">{% trans "Please enter a valid quantity greater than 0." %}</div>
                     </td>
                     <td>
-                        <input class="form-control form-control-sm" type="number" id="price_{{row_count}}" name="price[]" value="{{ form.initial.price }}" readonly>
+                        <input class="form-control form-control-sm" type="number" id="price_{{row_count}}" name="price[]" value=20.00 readonly>
                     </td>
                     <td>
-                        <input class="form-control form-control-sm" type="number" id="ext_price_{{row_count}}" name="ext_price[]" value="{{ form.initial.ext_price }}" readonly>
+                        <input class="form-control form-control-sm" type="number" id="ext_price_{{row_count}}" name="ext_price[]" value=20.00 readonly>
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-sm" type="button" onclick="addRow()">Add Row</button><br> 
+                        <button class="btn btn-primary btn-sm" type="button" onclick="addRow()">{% trans "Add Row" %}</button><br> 
                         <!-- <button class="btn btn-primary btn-sm" type="button" id="add_order_row_{{row_count}}" hx-post="{% url 'add_order_row' %}" hx-target="#order-table tbody tr" hx-swap="afterend" >Add</button></td> -->
                 </tr>
             </tbody>
 
         </table>
 
-        <button class="btn btn-success btn-sm" type="submit" id="save-button" hx-trigger="submit">Save Orders</button>
+        <button class="btn btn-success btn-sm" type="submit" id="save-button" hx-trigger="submit">{% trans "Save Orders" %}</button>
     </form>
    
     
@@ -66,32 +70,6 @@
                   placeholder: 'Select an Product',
                   allowClear: true,
                   minimumInputLength: 1,
-                  ajax: {
-                      url: '/search/results/',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                      console.log(params)
-                      var queryParameters = {
-                          item_name: params.term
-                      }
-                          return queryParameters; 
-                      },
-                      processResults: function(data) {
-                          console.log(data)
-                          return {
-                              results: $.map(data, function(data) {
-                                  return {
-                                      id: data.id,
-                                      text: data.item_name,
-  
-                                  };
-                              })
-                          };
-                          
-                      },
-                      cache: true
-                  }
               });
               
               $("#order-form").submit(function(event) {
@@ -161,6 +139,13 @@
                         select.className = "autocomplete form-control form-control-sm";
                         select.name = columns[i] + "[]";
                         select.setAttribute("style", "width: 100%;");
+
+                        var option = document.createElement("option");
+                        option.value = 2;
+                        option.text = "Dell"; // Set the visible text of the option
+                        option.selected = true;
+                        select.appendChild(option);
+                        
                         select.onchange = function () {
                             gettingprice(this);
                         };
@@ -197,14 +182,15 @@
                             }
                         });
                         var errorDiv = document.createElement("div");
+                        var errorMessage = '{% trans "Please select an item." %}';
                             errorDiv.className = columns[i] + "-error invalid-feedback"; // Assign dynamic class name
-                            errorDiv.textContent = "Please select an item."; // Change the error message as needed
+                            errorDiv.textContent = errorMessage; // Change the error message as needed
 
                                 // Append the error div after the select element
                             cell.appendChild(errorDiv);
                     } else {
                         input.type = "number";
-                        input.value = (columns[i] === "quantity") ? 0 : "0.0";
+                        input.value = (columns[i] === "quantity") ? 1 : "10.0";
                         input.className = (columns[i] === "quantity")?"quantity form-control form-control-sm" : "form-control form-control-sm";
                         input.name = columns[i] + "[]";
                         input.id = columns[i] + "_" + row_count; // Assign unique ID
@@ -216,8 +202,9 @@
                             cell.appendChild(input); 
 
                             var errorDiv = document.createElement("div");
+                            var errorNumMessage = '{% trans "Please enter a valid quantity greater than 0." %}';
                             errorDiv.className = columns[i] + "-error invalid-feedback"; // Assign dynamic class name
-                            errorDiv.textContent = "Please enter a valid quantity greater than 0."; // Change the error message as needed
+                            errorDiv.textContent = errorNumMessage; // Change the error message as needed
 
                             // Append the error div after the input element
                             cell.appendChild(errorDiv);    
@@ -233,7 +220,7 @@
                 var removeButton = document.createElement("button");
                 removeButton.type = "button";
                 removeButton.className = "btn btn-danger btn-sm";
-                removeButton.textContent = "Remove";
+                removeButton.textContent = "{% trans 'Remove' %}";
                 removeButton.addEventListener("click", function () {
                     removeRow(this);
                 });

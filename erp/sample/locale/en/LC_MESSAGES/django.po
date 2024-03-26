@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-26 10:48+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\sample\forms.py:18
+msgid "Name"
+msgstr ""
+
+#: .\sample\forms.py:19
+msgid "Email"
+msgstr ""
+
+#: .\sample\forms.py:20
+msgid "Phone Number"
+msgstr ""
+
+#: .\sample\templates\contacts\add_contact.html:5
+msgid "Add Contact"
+msgstr ""
+
+#: .\sample\templates\contacts\add_contact.html:9
+msgid "Submit"
+msgstr ""
+
+#: .\sample\templates\index.html:27
+msgid "Index"
+msgstr ""
+
+#: .\sample\templates\index.html:30
+msgid "Home"
+msgstr ""
+
+#: .\sample\templates\index.html:33
+msgid "Dynamic Model"
+msgstr ""
+
+#: .\sample\templates\index.html:36
+msgid "Employee"
+msgstr ""
+
+#: .\sample\templates\index.html:39
+msgid "Contact"
+msgstr ""
+
+#: .\sample\templates\index.html:42
+msgid "Orders"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:4
+msgid "Create Order"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:18
+msgid "Product"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:19
+msgid "Quantity"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:20
+msgid "Price"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:21
+msgid "Total"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:22
+msgid "Action"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:34
+#: .\sample\templates\orders\order_details.html:185
+msgid "Please select an item."
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:41
+#: .\sample\templates\orders\order_details.html:205
+msgid "Please enter a valid quantity greater than 0."
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:50
+msgid "Add Row"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:57
+msgid "Save Orders"
+msgstr ""
+
+#: .\sample\templates\orders\order_details.html:223
+msgid "Remove"
+msgstr ""

@@ -1,0 +1,119 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-26 10:18+0530\n"
+"PO-Revision-Date: 2024-03-26 10:22+0000\n"
+"Last-Translator:   <admin@test.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.10.0\n"
+
+#: .\sample\forms.py:18
+msgid "Name"
+msgstr "Nom"
+
+#: .\sample\forms.py:19
+msgid "Email"
+msgstr "Email"
+
+#: .\sample\forms.py:20
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+#: .\sample\templates\contacts\add_contact.html:5
+msgid "Add Contact"
+msgstr "Ajouter un contacts"
+
+#: .\sample\templates\contacts\add_contact.html:9
+msgid "Submit"
+msgstr "Soumettre"
+
+#: .\sample\templates\index.html:27
+msgid "Index"
+msgstr "Accueil"
+
+#: .\sample\templates\index.html:30
+msgid "Home"
+msgstr "Home Accueil"
+
+#: .\sample\templates\index.html:33
+msgid "Dynamic Model"
+msgstr "Modèle dynamique"
+
+#: .\sample\templates\index.html:36
+msgid "Employee"
+msgstr "Employé"
+
+#: .\sample\templates\index.html:39
+msgid "Contact"
+msgstr "Contact"
+
+#: .\sample\templates\index.html:42
+msgid "Orders"
+msgstr "Commandes"
+
+#: .\sample\templates\orders\order_details.html:4
+msgid "Create Order"
+msgstr "Créer une commande"
+
+#: .\sample\templates\orders\order_details.html:18
+msgid "Product"
+msgstr "Produit"
+
+#: .\sample\templates\orders\order_details.html:19
+msgid "Quantity"
+msgstr "Quantité"
+
+#: .\sample\templates\orders\order_details.html:20
+msgid "Price"
+msgstr "Prix"
+
+#: .\sample\templates\orders\order_details.html:21
+msgid "Total"
+msgstr "Total"
+
+#: .\sample\templates\orders\order_details.html:22
+msgid "Action"
+msgstr "Action"
+
+#: .\sample\templates\orders\order_details.html:34
+#: .\sample\templates\orders\order_details.html:185
+msgid "Please select an item."
+msgstr " Veuillez sélectionner un article"
+
+#: .\sample\templates\orders\order_details.html:41
+#: .\sample\templates\orders\order_details.html:205
+msgid "Please enter a valid quantity greater than 0."
+msgstr "Veuillez saisir une quantité valide supérieure à 0"
+
+#: .\sample\templates\orders\order_details.html:50
+msgid "Add Row"
+msgstr "Ajouter une ligne"
+
+#: .\sample\templates\orders\order_details.html:57
+msgid "Save Orders"
+msgstr "Enregistrer les commandes"
+
+#: .\sample\templates\orders\order_details.html:223
+msgid "Remove"
+msgstr "Retirer"
+
+#~ msgid "Number"
+#~ msgstr "Numéro"
+
+#~ msgid "Date"
+#~ msgstr "Date"
+
+#~ msgid "ID"
+#~ msgstr "Id"

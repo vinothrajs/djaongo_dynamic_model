@@ -96,3 +96,4 @@ def add_contact(request):
 
 def contact_added(request):
     return render(request, 'contacts/contact_added.html')
+
